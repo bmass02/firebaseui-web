@@ -44,7 +44,12 @@ const DIALOG_POLYFILL = 'if(typeof window!==\'undefined\')' +
 
 // Adds the firebase module requirement and exports firebaseui.
 const NPM_MODULE_WRAPPER = OPTIMIZATION_LEVEL === 'WHITESPACE_ONLY' ?
-    'var firebase=require(\'firebase/app\');require(\'firebase/auth\');' +
+    'var firebase;' +
+    'if(!(firebase||(window&&window.firebase))){' +
+    'firebase=require(\'firebase/app\');require(\'firebase/auth\');' +
+    '}else{' +
+    'firebase=window.firebase;' +
+    '}' +
     '%output%' + DIALOG_POLYFILL + 'module.exports=firebaseui;' :
     '(function() { var firebase=require(\'firebase/app\');' +
     'require(\'firebase/auth\');%output% ' + DIALOG_POLYFILL + '})();' +
